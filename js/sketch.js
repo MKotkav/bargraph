@@ -37,6 +37,7 @@ function setup() {
       oHeight: height,
       oWidth: rectW,
       touched: false,
+      active: false,
       title: ""
     };
     bars.push(bar);
@@ -46,6 +47,7 @@ function setup() {
   bars[2].title = " the witch ";
   bars[3].title = " is ";
   bars[4].title = " dead ";
+  bars[1].active = true;
 }
 
 
@@ -53,25 +55,27 @@ function draw() {
   fill(100, 100, 250);
 
   for (let bar of bars) {
-    fill(100, 100, 250);
-    rect(bar.xStart, bar.yStart, bar.width, bar.height);
-    textAlign(CENTER);
+    if(bar.active) {
+      fill(180, 255, 100);
+      rect(bar.xStart, bar.yStart, bar.width, bar.height);
+      }
+    else {
+      fill(100, 100, 250);
+      rect(bar.xStart, bar.yStart, bar.width, bar.height);
 
+    }
+    textAlign(CENTER);
     fill(0);
     text(bar.title, (bar.xStart + bar.width / 2), canvasHeight - 40, 0);
   }
-
-
   handleMouseover();
-
-
 }
 
 function handleMouseover() {
   for (let bar of bars) {
     if (checkBounds(bar) && bar.width < bar.oWidth + 10) {
       bar.xStart -= 1;
-      bar.width += 1;
+      bar.width += 2;
       bar.yStart -= 4;
       bar.height += 4;
       bar.touched = true;
@@ -93,12 +97,24 @@ function handleMouseover() {
   }
 }
 
-
 function mousePressed() {
   for(let bar of bars) {
     if(checkBounds(bar)) {
       console.log(bar.title);
-      testH.innerHTML += bar.title;
+      testH.innerHTML = "";
+      let heading = document.createElement('h1');
+      let text = document.createTextNode(bar.title);
+      heading.appendChild(text);
+      testH.appendChild(heading);
+      // testH.innerHTML += bar.title;
+      bar.active = true;
+    }
+    else {
+      for(let bar2 of bars) {
+        if(checkBounds(bar2)) {
+          bar.active = false;
+        }
+      }
     }
   }
 }
