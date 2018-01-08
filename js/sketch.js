@@ -1,8 +1,9 @@
 var canvas;
-let canvasHeight = 300;
-let canvasWidth = 600;
-let bars = [];
-let len = 5;
+let canvasHeight = 200;
+let canvasWidth = 400;
+let margin = 20;
+let topMargin = 30;
+let projectArr = getProjects();
 
 
 const testH = document.getElementById('test');
@@ -14,47 +15,28 @@ function setup() {
   noStroke();
   fill(100, 100, 250);
 
-  let margin = 40;
-  let rectH = canvasHeight - 50;
-  let rectW = (canvasWidth / len) - ((margin*(len+1))/len);
-  let graphNum = 5;
-  for (var i = 0; i < graphNum; i++) {
-    let height = rectH - random(150);
-    let xStart = (margin * (i + 1) + (rectW * i));
-    let yStart = canvasHeight - height;
+  setBarHeight(projectArr);
+  setBarWidth(projectArr);
 
-    let bar = {
-      xStart: xStart,
-      xEnd: xStart + rectW,
-      yStart: yStart,
-      yEnd: canvasHeight,
-      height: height,
-      width: rectW,
-      oXStart: xStart,
-      oXEnd: xStart + rectW,
-      oYStart: yStart,
-      oYEnd: canvasHeight,
-      oHeight: height,
-      oWidth: rectW,
-      touched: false,
-      active: false,
-      title: ""
-    };
-    bars.push(bar);
+  for(var i = 0; i < projectArr.length; i++) {
+    projectArr[i].xStart = (margin * (i + 1) + (projectArr[i].width * i));
+    projectArr[i].yStart = (canvasHeight - projectArr[i].height);
+    projectArr[i].oXStart = projectArr[i].xStart;
+    projectArr[i].oYStart = projectArr[i].yStart;
+    projectArr[i].oHeight = projectArr[i].height;
+    projectArr[i].oWidth = projectArr[i].width;
+    projectArr[i].touched = false;
+    projectArr[i].active = false;
   }
-  bars[0].title = " ding ";
-  bars[1].title = " dong ";
-  bars[2].title = " the witch ";
-  bars[3].title = " is ";
-  bars[4].title = " dead ";
-  bars[1].active = true;
+
+  projectArr[0].active = true;
 }
 
 
 function draw() {
   fill(100, 100, 250);
 
-  for (let bar of bars) {
+  for (let bar of projectsArr) {
     if(bar.active) {
       fill(180, 255, 100);
       rect(bar.xStart, bar.yStart, bar.width, bar.height);
@@ -66,13 +48,35 @@ function draw() {
     }
     textAlign(CENTER);
     fill(0);
-    text(bar.title, (bar.xStart + bar.width / 2), canvasHeight - 40, 0);
+    text(bar.type, (bar.xStart + bar.width / 2), canvasHeight - 40, 0);
   }
   handleMouseover();
 }
 
+function setBarHeight(arr) {
+  let maxFreq = 0;
+  for(let item of arr) {
+    if(item.projects.length > maxFreq) {
+      maxFreq = item.projects.length;
+    }
+  }
+  let unitHeight = (canvasHeight - topMargin) / maxFreq;
+
+  for(let bar of arr) {
+    bar.height = bar.projects.length * unitHeight;
+    console.log(bar.height);
+  }
+}
+
+function setBarWidth(arr) {
+  let width = (canvasWidth / arr.length) - ((margin * (arr.length + 1)) / arr.length);
+  for(let item of arr) {
+    item.width = width;
+  }
+}
+
 function handleMouseover() {
-  for (let bar of bars) {
+  for (let bar of projectArr) {
     if (checkBounds(bar) && bar.width < bar.oWidth + 10) {
       bar.xStart -= 1;
       bar.width += 2;
@@ -98,19 +102,22 @@ function handleMouseover() {
 }
 
 function mousePressed() {
-  for(let bar of bars) {
+  for(let bar of projectArr) {
     if(checkBounds(bar)) {
-      console.log(bar.title);
+      console.log(bar.type);
       testH.innerHTML = "";
-      let heading = document.createElement('h1');
-      let text = document.createTextNode(bar.title);
-      heading.appendChild(text);
-      testH.appendChild(heading);
+      // let heading = document.createElement('h1');
+      // let text = document.createTextNode(bar.type);
+      // heading.appendChild(text);
+      // testH.appendChild(heading);
       // testH.innerHTML += bar.title;
+
+      showProjects(bar.projects);
+
       bar.active = true;
     }
     else {
-      for(let bar2 of bars) {
+      for(let bar2 of projectArr) {
         if(checkBounds(bar2)) {
           bar.active = false;
         }
@@ -119,6 +126,24 @@ function mousePressed() {
   }
 }
 
+function showProjects(arr) {
+  for(var i = 0; i < arr.length; i++) {
+    let div = document.createElement('div');
+    let heading = document.createElement('h1');
+    let title = document.createTextNode(arr[i].name);
+    let description = document.createElement('p');
+    let descriptionTxt = document.createTextNode(arr[i].description);
+    heading.appendChild(title);
+    description.appendChild(descriptionTxt);
+    div.appendChild(heading);
+    div.appendChild(description);
+    testH.appendChild(div);
+  }
+
+
+}
+
 function checkBounds(obj) {
-  return mouseX > obj.xStart && mouseX < obj.xEnd && mouseY > obj.yStart && mouseY < obj.yEnd;
+  let xEnd = obj.xStart + obj.width;
+  return mouseX > obj.xStart && mouseX < xEnd && mouseY > obj.yStart && mouseY < canvasHeight;
 }
