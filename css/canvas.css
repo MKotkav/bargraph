@@ -1,26 +1,28 @@
-.canvas-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 1em;
+.main {
   margin-left: 25%;
   margin-right: 25%;
 }
 
+.canvas-container {
+  display: grid;
+  /* grid-template-columns: repeat(2, 1fr); */
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-gap: 1em;
+}
+
 .test {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1em;
-  width: minmax(10, 20);
+  grid-template-columns: repeat(auto-fill, 120px);
+  object-fit: cover;
+  grid-gap: 20px;
 }
 
 .test h1 {
   font-size: 18px;
+  margin-left: 5px;
 }
 
 .test p {
   margin-top: -10px;
-}
-
-.test div {
-  border: 1px solid black;
+  margin-left: 5px;
 }

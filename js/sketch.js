@@ -1,5 +1,5 @@
 var canvas;
-let canvasHeight = 200;
+let canvasHeight = 250;
 let canvasWidth = 400;
 let margin = 20;
 let topMargin = 30;
@@ -40,7 +40,10 @@ function draw() {
     if(bar.active) {
       fill(180, 255, 100);
       rect(bar.xStart, bar.yStart, bar.width, bar.height);
+      if(testH.innerHTML = " ") {
+        showProjects(bar.projects);
       }
+    }
     else {
       fill(100, 100, 250);
       rect(bar.xStart, bar.yStart, bar.width, bar.height);
@@ -133,8 +136,15 @@ function showProjects(arr) {
     let title = document.createTextNode(arr[i].name);
     let description = document.createElement('p');
     let descriptionTxt = document.createTextNode(arr[i].description);
+    let img = document.createElement('img');
+    img.src = arr[i].img;
+    img.setAttribute('width', '100%');
+    img.height = 100;
+
+
     heading.appendChild(title);
     description.appendChild(descriptionTxt);
+    div.appendChild(img);
     div.appendChild(heading);
     div.appendChild(description);
     testH.appendChild(div);
